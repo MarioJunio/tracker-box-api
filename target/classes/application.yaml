@@ -1,4 +1,15 @@
 spring:
+  main:
+    allow-circular-references: true
   data:
     mongodb:
-        uri: mongodb://root:example@localhost:27017/tracker?authSource=admin&retryWrites=true&w=majority
+        uri: mongodb://mario:example@localhost:27017/tracker?authSource=admin&retryWrites=true&w=majority
+
+jwt:
+  secret: secret
+  expirationTime: 3600
+
+
+
+
+

@@ -1,6 +1,5 @@
 package br.com.trackerapi.resource.user;
 
-import br.com.trackerapi.entity.UserEntity;
 import br.com.trackerapi.resource.user.request.UserRequestDto;
 import br.com.trackerapi.resource.user.response.UserResponseDto;
 import br.com.trackerapi.service.UserService;
