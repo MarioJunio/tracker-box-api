@@ -3,8 +3,8 @@ package br.com.trackerapi.resource.track.request;
 import br.com.trackerapi.entity.CoordinateEntity;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class TrackRequestDto {
@@ -13,6 +13,7 @@ public class TrackRequestDto {
     private int maxSpeed;
     private double distance;
     private long time;
-    private List<CoordinateEntity> coordinates = new ArrayList<>();
+    private Set<CoordinateEntity> coordinates = new HashSet<>();
     private String userId;
+    private String checkSum;
 }

@@ -3,6 +3,7 @@ package br.com.trackerapi.service;
 import br.com.trackerapi.entity.CoordinateEntity;
 import br.com.trackerapi.entity.TrackEntity;
 import br.com.trackerapi.entity.UserEntity;
+import br.com.trackerapi.exception.TrackAlreadyPublished;
 import br.com.trackerapi.exception.TrackCoordinateEmptyException;
 import br.com.trackerapi.repository.TrackRepository;
 import br.com.trackerapi.repository.UserRepository;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,8 +32,6 @@ public class TrackService {
     private final UserRepository userRepository;
 
     public List<TrackResponseDto> filterByDistance(TrackFilterRequest filter) {
-        log.info("M=filterByDistance");
-
         AggregationResults<TrackEntity> trackEntities = trackRepository.readByDistance(filter.getCurrentCoordinate().getLatitude(), filter.getCurrentCoordinate().getLongitude(), DistanceConverters.kmToMeters(filter.getMaxDistance()));
         List<TrackEntity> tracks = trackEntities.getMappedResults();
 
@@ -49,10 +49,15 @@ public class TrackService {
         return mapperUtil.mapList(tracks, TrackResponseDto.class);
     }
 
+    @Transactional
     public TrackResponseDto create(TrackRequestDto trackRequest) {
         log.info("M=create, trackRequest={}", trackRequest);
 
+        // verify if any track has the same checkSum
+        validateCheckSumMatch(trackRequest.getCheckSum());
+
         final TrackEntity track = mapperUtil.convertTo(trackRequest, TrackEntity.class);
+        track.setId(null);
         log.info("M=create, track={}", track);
 
         final UserEntity user = userRepository
@@ -68,6 +73,14 @@ public class TrackService {
         log.info("M=create, trackCreated={}", trackCreated);
 
         return mapperUtil.convertTo(trackCreated, TrackResponseDto.class);
+    }
+
+    private void validateCheckSumMatch(String checkSum) {
+        trackRepository
+                .findByCheckSum(checkSum)
+                .ifPresent((trackEntity) -> {
+                    throw new TrackAlreadyPublished("Track já foi publicado");
+                });
     }
 
     private GeoJsonPoint getStartCoordinateFromTrack(TrackEntity track) {

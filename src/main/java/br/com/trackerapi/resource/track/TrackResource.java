@@ -6,6 +6,7 @@ import br.com.trackerapi.resource.track.response.TrackResponseDto;
 import br.com.trackerapi.service.TrackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,9 @@ public class TrackResource {
         TrackResponseDto trackResponse = trackService.create(trackRequest);
         log.info("M=publish, trackResponse={}", trackResponse);
 
-        return ResponseEntity.ok(trackResponse);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(trackResponse);
     }
 
     @GetMapping

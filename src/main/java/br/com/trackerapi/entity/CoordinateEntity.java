@@ -1,9 +1,6 @@
 package br.com.trackerapi.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -11,7 +8,12 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CoordinateEntity implements Serializable {
+
+    @EqualsAndHashCode.Include
     private double latitude;
+
+    @EqualsAndHashCode.Include
     private double longitude;
 }

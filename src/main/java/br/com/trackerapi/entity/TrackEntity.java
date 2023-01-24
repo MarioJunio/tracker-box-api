@@ -19,15 +19,19 @@ public class TrackEntity implements Serializable {
     @Id
     private String id;
 
+    // check sum using SHA256 calculated in app to distinct tracks
+    private String checkSum;
+
     private int startSpeed;
     private int maxSpeed;
+
+    // in Meters
     private double distance;
     private long time;
 
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint startCoordinate;
 
-//    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint endCoordinate;
 
     private List<CoordinateEntity> coordinates = new ArrayList<>();
